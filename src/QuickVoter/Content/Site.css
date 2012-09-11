@@ -64,6 +64,11 @@ textarea {
     display: none;
 }
 
+/* Header */
+header {
+    margin-bottom: 40px;
+}
+
 /* Front page list styles */
 .number-of-answers {
     text-align: center;
@@ -80,22 +85,19 @@ textarea {
 }
 
 .number-title {
-    padding-top: 4px;
     font-size: 1.15em;
-    font-weight: bold;
     color: #317eac;
     text-align: center;
 }
 
 .frontpage-question {
-    margin-bottom: 10px;
+    margin-bottom: 30px;
 }
 
 .frontpage-question .question {
     font-size:1.3em;
-    font-weight:bold;
 }
 
 .frontpage-new-question {
-    margin-top: 30px;
+    margin-top: 60px;
 }

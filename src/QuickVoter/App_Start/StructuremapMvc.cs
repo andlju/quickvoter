@@ -1,0 +1,15 @@
+using System.Web.Http;
+using System.Web.Mvc;
+using StructureMap;
+
+[assembly: WebActivator.PreApplicationStartMethod(typeof(QuickVoter.App_Start.StructuremapMvc), "Start")]
+
+namespace QuickVoter.App_Start {
+    public static class StructuremapMvc {
+        public static void Start() {
+			IContainer container = IoC.Initialize();
+            DependencyResolver.SetResolver(new StructureMapDependencyResolver(container));
+            GlobalConfiguration.Configuration.DependencyResolver = new StructureMapDependencyResolver(container);
+        }
+    }
+}

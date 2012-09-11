@@ -14,6 +14,13 @@ namespace QuickVoter
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+
+            routes.MapHttpRoute(
+                name: "AnswersApi",
+                routeTemplate: "api/questions/{questionId}/answers/{answerId}/{action}",
+                defaults: new { controller = "Answers", answerId = RouteParameter.Optional, action = RouteParameter.Optional }
+            );
+
             routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",

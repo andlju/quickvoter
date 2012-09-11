@@ -2,7 +2,9 @@
     ViewBag.Title = "Current questions";
 }
 
-<h1>Current questions <small class="hidden-phone">What are people asking right now?</small></h1>
+<header>
+    <h1>Current questions <small class="hidden-phone">What are people asking right now?</small></h1>
+</header>
 
 <section id="currentQuestions">
     <div class="row">
@@ -10,11 +12,11 @@
             <div class="row frontpage-question">
                 <div class="span1 hidden-phone">
                     <div class="number-of-answers">4</div>
-                    <div class="number-title">Answers</div>
+                    <div class="number-title">answers</div>
                 </div>
                 <div class="span1 hidden-phone">
                     <div class="number-of-votes">12</div>
-                    <div class="number-title">Votes</div>
+                    <div class="number-title">votes</div>
                 </div>
                 <div class="span6">
                     <div class="question"><a href="#">Where should we host the next #kodkaffe</a></div>
@@ -24,25 +26,25 @@
             <div class="row frontpage-question">
                 <div class="span1 hidden-phone">
                     <div class="number-of-answers">4</div>
-                    <div class="number-title">Answers</div>
+                    <div class="number-title">answers</div>
                 </div>
                 <div class="span1 hidden-phone">
                     <div class="number-of-votes">12</div>
-                    <div class="number-title">Votes</div>
+                    <div class="number-title">votes</div>
                 </div>
                 <div class="span6">
-                    <div class="question"><a href="#">Where should we host the next #kodkaffe</a></div>
+                    <div class="question"><a href="#">So, where do you stand on the holy tabs vs. spaces debate?</a></div>
                     <div class="pull-right">Asked by CodingInsomnia</div>
                 </div>
             </div>
             <div class="row frontpage-question">
                 <div class="span1 hidden-phone">
                     <div class="number-of-answers">4</div>
-                    <div class="number-title">Answers</div>
+                    <div class="number-title">answers</div>
                 </div>
                 <div class="span1 hidden-phone">
                     <div class="number-of-votes">12</div>
-                    <div class="number-title">Votes</div>
+                    <div class="number-title">votes</div>
                 </div>
                 <div class="span6">
                     <div class="question"><a href="#">Where should we host the next #kodkaffe</a></div>
@@ -51,16 +53,20 @@
             </div>
 
             <div class="row frontpage-new-question">
-                <div class="span2">
-                    <h3>New question</h3>
-                </div>
                 <div class="span6">
-                    <form class="form">
+                    <form class="form-horizontal">
                         <input type="text" class="input-large" />
-                        <input type="submit" class="btn btn-primary" />
+                        <input type="submit" value="Add" class="btn btn-primary" />
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+@section scripts
+{
+    <script type="text/javascript">
+        QuickVoter.Questions.addQuestion
+    </script>
+}
