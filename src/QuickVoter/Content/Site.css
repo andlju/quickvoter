@@ -78,7 +78,6 @@ header {
 }
 
 .number-of-votes {
-    text-align: center;
     font-size: 1.3em;
     font-weight: bold;
     color: #606060;
@@ -90,14 +89,43 @@ header {
     text-align: center;
 }
 
+.frontpage-question .number-of-votes {
+    text-align: center;
+}
+
+.frontpage-question .number-of-answers {
+    text-align: center;
+}
+
 .frontpage-question {
     margin-bottom: 30px;
 }
 
-.frontpage-question .question {
+.frontpage-question .text {
     font-size:1.3em;
 }
 
 .frontpage-new-question {
     margin-top: 60px;
+}
+
+
+.answer .text {
+    padding-top: 1px;
+    font-size:1.5em;
+}
+
+.answer .number-of-votes {
+    padding-top: 1px;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.answer {
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.answer .actions {
+
 }

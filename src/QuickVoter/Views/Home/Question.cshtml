@@ -1,0 +1,61 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "Question";
+}
+
+<header>
+    <h1 data-bind="text: questionText"></h1>
+</header>
+<h2>Answers</h2>
+<div class="row">
+    <div class="span8" data-bind="foreach: answers">
+
+        <div class="row answer">
+            <div class="span1 actions">
+                <button class="btn btn-small btn-info">Vote</button>
+            </div>
+            <div class="span1 number-of-votes" data-bind="text: numberOfVotes">
+            </div>
+            <div class="span6 text">
+                <a href="#" data-bind="text: answerText">Le Café (Centralen)</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        
+        function AnswerViewModel(model) {
+            var self = this;
+
+            self.answerText = model.text;
+            self.numberOfVotes = model.votes;
+        }
+
+        function QuestionViewModel(model) {
+            var self = this;
+
+            self.questionText = model.text;
+
+            self.answers = $.map(model.answers, function (el) { return new AnswerViewModel(el); });
+        }
+        
+        $(function() {
+            var mainViewModel = new QuestionViewModel({
+                
+                text: 'Var ska vi träffas på nästa #kodkaffe?',
+                answers: [
+                    { text: 'Le Café (Centralen)', votes: 12 },
+                    { text: 'Espresso House', votes: 8 },
+                    { text: 'Le Café (Sture)', votes: 8 },
+                    { text: 'Hemma hos Cecilia', votes: 3 }
+                ]
+            });
+            ko.applyBindings(mainViewModel);
+        });
+    </script>
+}

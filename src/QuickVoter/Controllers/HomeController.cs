@@ -16,5 +16,10 @@ namespace QuickVoter.Controllers
             return View();
         }
 
+
+        public ActionResult Question(int id)
+        {
+            return View();
+        }
     }
 }
