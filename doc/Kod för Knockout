@@ -1,0 +1,118 @@
+Kod för Knockout
+----------------
+
+Skapa enkel vymodell för Answer
+
+        function AnswerViewModel() {
+            var self = this;
+
+            self.answerText = 'Le Café (Centralen)';
+            self.votes = 7;
+        }
+
+
+
+Refactoring av vymodell - ta emot model
+
+        function AnswerViewModel(model) {
+            var self = this;
+
+            self.answerText = model.text;
+            self.votes = model.votes;
+        }
+
+
+
+
+
+
+Lägg till vymodell för Question
+
+        function QuestionViewModel() {
+            var self = this;
+
+            self.questionText = 'Var ska vi träffas på nästa #kodkaffe?';
+            self.answers = [
+                new AnswerViewModel({ text: 'Le Café (Centralen)', votes: 7 }),
+                new AnswerViewModel({ text: 'Espresso House', votes: 4 }),
+                new AnswerViewModel({ text: 'Le Café (Stureplan)', votes: 3 })
+            ];
+        }
+
+
+
+
+Alla vymodeller med indata
+
+        function AnswerViewModel(model) {
+            var self = this;
+
+            self.answerText = model.text;
+            self.votes = model.votes;
+        }
+
+        function QuestionViewModel(model) {
+            var self = this;
+
+            self.questionText = model.text;
+            self.answers = $.map(model.answers, function(el) { return new AnswerViewModel(el); });
+        }
+
+        var questionModel = {
+            text: 'Var ska vi träffas på nästa #kodkaffe?',
+            answers: [
+                { text: 'Le Café (Centralen)', votes: 7 },
+                { text: 'EspressoHouse', votes: 4 },
+                { text: 'Le Café (Stureplan)', votes: 3 },
+                { text: 'Hemma hos Cecilia', votes: 4 }
+            ]
+        };
+        
+        var mainViewModel = new QuestionViewModel(questionModel);
+        ko.applyBindings(mainViewModel);
+
+
+
+Click-hantering
+
+        function AnswerViewModel(model) {
+            var self = this;
+
+            self.answerText = model.text;
+            self.votes = model.votes;
+
+            self.vote = function () {
+                self.votes = self.votes + 1;
+                alert('Votes: ' + self.votes);
+            };
+        }
+
+
+
+Introducera Observables
+
+        function AnswerViewModel(model) {
+            var self = this;
+
+            self.answerText = model.text;
+            self.votes = ko.observable(model.votes);
+
+            self.vote = function () {
+                self.votes(self.votes() + 1);
+            };
+        }
+
+
+
+Ruta för att lägga till nytt svar
+
+<div class="row">
+    <div class="offset2 span8">
+        <form action="#">
+            <input type="text" class="input-large" />
+            <input type="submit" class="btn btn-primary" value="New answer"/>
+        </form>
+    </div>
+</div>
+
+

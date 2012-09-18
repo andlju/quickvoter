@@ -19,3 +19,42 @@ MVVM
 	- Vad är MVC?
 	- Skillnad med MVVM
 	- 
+
+Skapa enkel vymodell för Answer
+	- Question-sidan
+	- Skapa AnswerViewModel
+	- Sätt upp data bindings
+	- ko.applyBindings()
+
+
+Refactoring av vymodell - ta emot model
+
+
+Lägg till vymodell för Question
+	- questionText
+	- Lista med answers
+	- Lägg till data bindings för questionText och answers (foreach)
+
+
+Refactoring av vymodeller - ta emot model
+
+
+Click-hantering
+	- Ny funktion i AnswerViewModel. 
+	- alert('Voted')
+	- Lägg till data binding för click på Vote-knappen
+	- self.votes = self.votes + 1
+
+
+Introducera Observables
+	- ko.observable(votes)
+	- ta bort alert
+
+
+Ruta för att lägga till nytt svar
+	- Form med text-fält och submit-knapp
+	- newAnswerText
+	- addAnswer funktion
+
+
+Gör om till observableArray
