@@ -20,20 +20,25 @@ namespace QuickVoter
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-{version}.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                        "~/Scripts/bootstrap*"));
-
-            bundles.Add(new ScriptBundle("~/bundles/app").Include(
-                        "~/Scripts/app/*.js"));
-
-            bundles.Add(new ScriptBundle("~/bundles/app/tests").Include(
-                        "~/Scripts/app/tests/*.js"));
-
+            // Knockout
             bundles.Add(new ScriptBundle("~/bundles/knockout").Include(
                         "~/Scripts/knockout-{version}.js"));
 
+            // Twitter Bootstrap scripts
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+                        "~/Scripts/bootstrap*"));
+
+            // Application-specific scripts
+            bundles.Add(new ScriptBundle("~/bundles/app").Include(
+                        "~/Scripts/app/*.js"));
+
+            // Test scripts
+            bundles.Add(new ScriptBundle("~/bundles/app/tests").Include(
+                        "~/Scripts/app/tests/*.js"));
+
             bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/site.css"));
 
+            // Twitter Bootstrap CSS (Cerulean theme from http://bootswatch.com/)
             bundles.Add(new StyleBundle("~/Content/bootstrap").Include("~/Content/bootstrap-cerulean.css"));
             bundles.Add(new StyleBundle("~/Content/bootstrap-responsive").Include("~/Content/bootstrap-responsive*"));
 

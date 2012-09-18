@@ -1,0 +1,21 @@
+Knockout + SignalR
+------------------
+
+Snabb genomgång av appen.
+
+	- ASP.NET MVC 4
+	- Web API
+	- RavenDB
+	- StructureMap
+
+	- Twitter Bootstrap
+	- Jasmine
+	- Knockout
+
+Bundles
+
+MVVM
+
+	- Vad är MVC?
+	- Skillnad med MVVM
+	- 
