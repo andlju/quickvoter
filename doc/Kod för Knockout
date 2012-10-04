@@ -1,7 +1,9 @@
+/*
 Kod för Knockout
 ----------------
 
 Skapa enkel vymodell för Answer
+*/
 
         function AnswerViewModel() {
             var self = this;
@@ -12,7 +14,9 @@ Skapa enkel vymodell för Answer
 
 
 
+/*
 Refactoring av vymodell - ta emot model
+*/
 
         function AnswerViewModel(model) {
             var self = this;
@@ -25,8 +29,9 @@ Refactoring av vymodell - ta emot model
 
 
 
-
+/*
 Lägg till vymodell för Question
+*/
 
         function QuestionViewModel() {
             var self = this;
@@ -41,8 +46,9 @@ Lägg till vymodell för Question
 
 
 
-
+/*
 Alla vymodeller med indata
+*/
 
         function AnswerViewModel(model) {
             var self = this;
@@ -72,8 +78,9 @@ Alla vymodeller med indata
         ko.applyBindings(mainViewModel);
 
 
-
+/*
 Click-hantering
+*/
 
         function AnswerViewModel(model) {
             var self = this;
@@ -88,8 +95,9 @@ Click-hantering
         }
 
 
-
+/*
 Introducera Observables
+*/
 
         function AnswerViewModel(model) {
             var self = this;
@@ -104,7 +112,9 @@ Introducera Observables
 
 
 
+/*
 Ruta för att lägga till nytt svar
+*/
 
 <div class="row">
     <div class="offset2 span8">
@@ -114,5 +124,27 @@ Ruta för att lägga till nytt svar
         </form>
     </div>
 </div>
+
+
+
+
+/*
+Gör om till observableArray
+*/
+
+        function QuestionViewModel(model) {
+            var self = this;
+
+            self.questionText = model.text;
+            self.answers = ko.observableArray($.map(model.answers, function(el) { return new AnswerViewModel(el); }));
+
+            self.newAnswerText = ko.observable();
+
+            self.addAnswer = function() {
+                self.answers.push(new AnswerViewModel({ text: self.newAnswerText(), votes: 1 }));
+                self.newAnswerText('');
+            };
+        }
+
 
 

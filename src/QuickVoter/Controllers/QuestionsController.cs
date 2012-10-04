@@ -21,6 +21,11 @@ namespace QuickVoter.Controllers
         public int AnswerId { get; set; }
     }
 
+    public class AddAnswerCommand
+    {
+        public string Answer { get; set; }
+    }
+
     public class QuestionsController : ApiController
     {
         private readonly IDocumentSession _session;
@@ -65,7 +70,20 @@ namespace QuickVoter.Controllers
         {
             _session = session;
         }
-        
+
+        public Answer Post(int questionId, AddAnswerCommand command)
+        {
+            var question = _session.Load<Question>(questionId);
+            var nextId = question.Answers.Count;
+            var newAnswer = new Answer() { Id = nextId, Text = command.Answer, Votes = 1 };
+            question.Answers.Add(newAnswer);
+            
+            _session.Store(question);
+            _session.SaveChanges();
+            
+            return newAnswer;
+        }
+
         [ActionName("vote")]
         public Answer Post(int questionId, int answerId)
         {

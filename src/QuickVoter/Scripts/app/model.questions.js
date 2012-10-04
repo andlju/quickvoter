@@ -19,6 +19,16 @@ QuickVoter.Questions = (function($) {
         });
     };
 
+    var addAnswer = function(questionId, answer) {
+        return $.ajax('/api/questions/' + questionId + '/answers', {
+            type: 'POST',
+            contentType: 'application/json',
+            processData: false,
+            dataType: 'json',
+            data: JSON.stringify(answer)
+        });
+    };
+
     var addVote = function(questionId, answerId) {
         return $.ajax('/api/questions/' + questionId + '/answers/' + answerId + '/vote', {
             type: 'POST',
@@ -29,6 +39,7 @@ QuickVoter.Questions = (function($) {
     return {
         loadQuestions: loadQuestions,
         addQuestion: addQuestion,
+        addAnswer: addAnswer,
         addVote: addVote
     };
 })($);
