@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Question";
 }
-
+<!-- ko with: question -->
 <header>
     <h1 data-bind="text: questionText"></h1>
 </header>
@@ -31,47 +31,35 @@
         </form>
     </div>
 </div>
+<!-- /ko -->
 
 @section scripts
 {
     <script type="text/javascript">
-        
-        function AnswerViewModel(model) {
+
+        function PageViewModel() {
             var self = this;
 
-            self.answerText = model.text;
-            self.votes = ko.observable(model.votes);
+            self.question = ko.observable();
 
-            self.vote = function () {
-                self.votes(self.votes() + 1);
+            self.hub = $.connection.questionHub;
+
+            self.refresh = function() {
+                QuickVoter.Questions.loadQuestion(@ViewBag.QuestionId)
+                    .done(function (res) {
+                        var questionViewModel = new QuestionViewModel(res);
+                        self.question(questionViewModel);
+                        self.hub.answerAdded = questionViewModel.answerAdded;
+                        self.hub.votesUpdated = questionViewModel.votesUpdated;
+                    });
             };
+
+            self.refresh();
         }
-
-        function QuestionViewModel(model) {
-            var self = this;
-
-            self.questionText = model.text;
-            self.answers = ko.observableArray($.map(model.answers, function(el) { return new AnswerViewModel(el); }));
-
-            self.newAnswerText = ko.observable();
-
-            self.addAnswer = function() {
-                self.answers.push(new AnswerViewModel({ text: self.newAnswerText(), votes: 1 }));
-                self.newAnswerText('');
-            };
-        }
-
-        var questionModel = {
-            text: 'Var ska vi träffas på nästa #kodkaffe?',
-            answers: [
-                { text: 'Le Café (Centralen)', votes: 7 },
-                { text: 'EspressoHouse', votes: 4 },
-                { text: 'Le Café (Stureplan)', votes: 3 },
-                { text: 'Hemma hos Cecilia', votes: 4 }
-            ]
-        };
         
-        var mainViewModel = new QuestionViewModel(questionModel);
-        ko.applyBindings(mainViewModel);
+        $.connection.hub.logging = true;
+        $.connection.hub.start();
+        var pageViewModel = new PageViewModel();
+        ko.applyBindings(pageViewModel);
     </script>
 }

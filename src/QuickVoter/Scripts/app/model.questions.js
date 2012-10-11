@@ -2,6 +2,13 @@
 
 QuickVoter.Questions = (function($) {
 
+    var loadQuestion = function (questionId) {
+        return $.ajax('/api/questions/' + questionId, {
+            type: 'GET',
+            dataType: 'json'
+        });
+    };
+
     var loadQuestions = function() {
         return $.ajax('/api/questions', {
             type: 'GET',
@@ -37,6 +44,7 @@ QuickVoter.Questions = (function($) {
     };
 
     return {
+        loadQuestion: loadQuestion,
         loadQuestions: loadQuestions,
         addQuestion: addQuestion,
         addAnswer: addAnswer,

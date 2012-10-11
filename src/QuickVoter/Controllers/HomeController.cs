@@ -19,6 +19,7 @@ namespace QuickVoter.Controllers
 
         public ActionResult Question(int id)
         {
+            ViewBag.QuestionId = id;
             return View();
         }
     }

@@ -1,5 +1,5 @@
 Knockout + SignalR
-------------------
+==================
 
 Snabb genomgång av appen.
 
@@ -58,3 +58,38 @@ Ruta för att lägga till nytt svar
 
 
 Gör om till observableArray
+	- Nu kan man lägga till ett nytt svar!
+
+
+API
+===
+
+Visa Api:et
+
+WebApi
+
+Fiddler
+
+Lägg till fråga via Fiddler 
+	- Skicka in exempelmodellen
+ 	- Notera id:t
+ 	- Sätt start action till Home/Question/{id}
+
+
+
+Introducera MainViewModel 
+	- Håller ihop flödet på en sida
+	- Laddar in question från API:et
+
+
+Spara nya svar
+	- Lägg till id på QuestionViewModel
+	- Bryt ut answerAdded till egen metod som tar emot ett Answer
+	- Anropa API:et för att spara nytt svar 
+
+
+Spara röstningar
+	- Lägg till questionId och answerId till AnswerViewModel
+	- Skicka in questionId till AnswerViewModel
+	- Bryt ut votesUpdated till egen metod
+	- Spara röstning 

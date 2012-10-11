@@ -4,6 +4,7 @@ using System.Web.Http;
 using QuickVoter.Models;
 using Raven.Client;
 using Raven.Client.Document;
+using SignalR;
 
 namespace QuickVoter.Controllers
 {
@@ -11,7 +12,7 @@ namespace QuickVoter.Controllers
     {
         public string Text { get; set; }
 
-        public List<string> Answers { get; set; }
+        public List<Answer> Answers { get; set; }
     }
 
     public class AddVoteCommand
@@ -23,7 +24,8 @@ namespace QuickVoter.Controllers
 
     public class AddAnswerCommand
     {
-        public string Answer { get; set; }
+        public string Text { get; set; }
+        public int Votes { get; set; }
     }
 
     public class QuestionsController : ApiController
@@ -51,11 +53,15 @@ namespace QuickVoter.Controllers
                                {
                                    Text = command.Text,
                                    Answers =
-                                       command.Answers.Select((a, i) => new Answer() {Id = i, Text = a, Votes = 0}).ToList()
+                                       command.Answers.Select((a, i) => new Answer() {Id = i, Text = a.Text, Votes = a.Votes}).ToList()
                                };
 
             _session.Store(question);
             _session.SaveChanges();
+
+            var hubContext = GlobalHost.ConnectionManager.GetHubContext<QuestionHub>();
+            hubContext.Clients.questionAdded(question);
+
             return question;
         }
         
@@ -75,11 +81,14 @@ namespace QuickVoter.Controllers
         {
             var question = _session.Load<Question>(questionId);
             var nextId = question.Answers.Count;
-            var newAnswer = new Answer() { Id = nextId, Text = command.Answer, Votes = 1 };
+            var newAnswer = new Answer() { Id = nextId, Text = command.Text, Votes = 1 };
             question.Answers.Add(newAnswer);
             
             _session.Store(question);
             _session.SaveChanges();
+
+            var hubContext = GlobalHost.ConnectionManager.GetHubContext<QuestionHub>();
+            hubContext.Clients.answerAdded(newAnswer);
             
             return newAnswer;
         }
@@ -92,6 +101,11 @@ namespace QuickVoter.Controllers
             answer.Votes++;
             _session.Store(question);
             _session.SaveChanges();
+
+            var hubContext = GlobalHost.ConnectionManager.GetHubContext<QuestionHub>();
+            hubContext.Clients.votesUpdated(answer);
+            
+
             return answer;
         }
     }

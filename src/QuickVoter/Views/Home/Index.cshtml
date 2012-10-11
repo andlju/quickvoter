@@ -9,6 +9,7 @@
 <section id="currentQuestions">
     <div class="row">
         <div class="span8">
+            <!-- ko foreach: questions -->
             <div class="row frontpage-question">
                 <div class="span1 hidden-phone">
                     <div class="number-of-answers">4</div>
@@ -19,43 +20,16 @@
                     <div class="number-title">votes</div>
                 </div>
                 <div class="span6">
-                    <div class="text"><a href="/Home/Question/1">Where should we host the next #kodkaffe</a></div>
+                    <div class="text"><a data-bind="text: questionText, attr : { href: '/Home/Question/' + questionId }"></a></div>
                     <div class="pull-right">Asked by CodingInsomnia</div>
                 </div>
             </div>
-            <div class="row frontpage-question">
-                <div class="span1 hidden-phone">
-                    <div class="number-of-answers">4</div>
-                    <div class="number-title">answers</div>
-                </div>
-                <div class="span1 hidden-phone">
-                    <div class="number-of-votes">12</div>
-                    <div class="number-title">votes</div>
-                </div>
-                <div class="span6">
-                    <div class="text"><a href="#">So, where do you stand on the holy tabs vs. spaces debate?</a></div>
-                    <div class="pull-right">Asked by CodingInsomnia</div>
-                </div>
-            </div>
-            <div class="row frontpage-question">
-                <div class="span1 hidden-phone">
-                    <div class="number-of-answers">4</div>
-                    <div class="number-title">answers</div>
-                </div>
-                <div class="span1 hidden-phone">
-                    <div class="number-of-votes">12</div>
-                    <div class="number-title">votes</div>
-                </div>
-                <div class="span6">
-                    <div class="text"><a href="#">Where should we host the next #kodkaffe</a></div>
-                    <div class="pull-right">Asked by CodingInsomnia</div>
-                </div>
-            </div>
+            <!-- /ko -->
 
             <div class="row frontpage-new-question">
                 <div class="span6">
-                    <form class="form-horizontal">
-                        <input type="text" class="input-large" />
+                    <form class="form-horizontal" data-bind="submit: addQuestion">
+                        <input type="text" class="input-large" data-bind="value: newQuestion" />
                         <input type="submit" value="Add" class="btn btn-primary" />
                     </form>
                 </div>
@@ -67,6 +41,42 @@
 @section scripts
 {
     <script type="text/javascript">
+        /// <reference path="~/Scripts/app/model.questions.js"/>
 
+        function PageViewModel() {
+            var self = this;
+
+            self.hub = $.connection.questionHub;
+            
+            self.questions = ko.observableArray([]);
+
+            self.newQuestion = ko.observable();
+
+            self.questionAdded = function(res) {
+                var q = new QuestionViewModel(res);
+                self.questions.push(q);
+            };
+            
+            self.addQuestion = function () {
+                QuickVoter.Questions.addQuestion({ text: self.newQuestion(), answers: [] });
+                self.newQuestion('');
+            };
+
+            self.refresh = function() {
+                QuickVoter.Questions.loadQuestions().
+                    done(function (res) {
+                        self.questions($.map(res, function(el) { return new QuestionViewModel(el); }));
+                    });
+                self.hub.questionAdded = self.questionAdded;
+            };
+            self.refresh();
+        }
+
+        $(function() {
+            $.connection.hub.logging = true;
+            $.connection.hub.start();
+            var viewModel = new PageViewModel();
+            ko.applyBindings(viewModel);
+        });
     </script>
 }
