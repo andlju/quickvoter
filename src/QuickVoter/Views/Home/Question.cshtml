@@ -3,35 +3,55 @@
 @{
     ViewBag.Title = "Question";
 }
-<!-- ko with: question -->
+
 <header>
-    <h1 data-bind="text: questionText"></h1>
+    <h1>Vilken musik kodar du helst till?</h1>
 </header>
-<h2>Answers</h2>
 <div class="row">
-    <div class="span8" data-bind="foreach: answers">
+    <div class="span8 well">
 
         <div class="row answer">
             <div class="span1 actions">
-                <button class="btn btn-small btn-info" data-bind="click: vote">Vote</button>
+                <button class="btn btn-small btn-info">Vote</button>
             </div>
-            <div class="span1 number-of-votes" data-bind="text: votes"></div>
+            <div class="span1 number-of-votes">4</div>
             <div class="span6 text">
-                <a href="#" data-bind="text: answerText"></a>
+                <a href="#">Dubstep</a>
+            </div>
+        </div>
+
+        <div class="row answer">
+            <div class="span1 actions">
+                <button class="btn btn-small btn-info">Vote</button>
+            </div>
+            <div class="span1 number-of-votes">1</div>
+            <div class="span6 text">
+                <a href="#">Eurodisco</a>
+            </div>
+        </div>
+
+        <div class="row answer">
+            <div class="span1 actions">
+                <button class="btn btn-small btn-info">Vote</button>
+            </div>
+            <div class="span1 number-of-votes">3</div>
+            <div class="span6 text">
+                <a href="#">Klassiskt</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="offset2 span6">
+                <form class="form-horizontal" action="#">
+                    <input type="text" class="input-large" placeholder="New answer"/>
+                    <input type="submit" class="btn btn-primary" value="Add"/>
+                </form>
             </div>
         </div>
     </div>
+
 </div>
 
-<div class="row">
-    <div class="offset2 span8">
-        <form action="#" data-bind="submit: addAnswer">
-            <input type="text" class="input-large" data-bind="value: newAnswerText"/>
-            <input type="submit" class="btn btn-primary" value="New answer"/>
-        </form>
-    </div>
-</div>
-<!-- /ko -->
 
 @section scripts
 {
