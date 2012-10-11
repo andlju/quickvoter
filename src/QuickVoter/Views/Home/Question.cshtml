@@ -37,29 +37,6 @@
 {
     <script type="text/javascript">
 
-        function PageViewModel() {
-            var self = this;
-
-            self.question = ko.observable();
-
-            self.hub = $.connection.questionHub;
-
-            self.refresh = function() {
-                QuickVoter.Questions.loadQuestion(@ViewBag.QuestionId)
-                    .done(function (res) {
-                        var questionViewModel = new QuestionViewModel(res);
-                        self.question(questionViewModel);
-                        self.hub.answerAdded = questionViewModel.answerAdded;
-                        self.hub.votesUpdated = questionViewModel.votesUpdated;
-                    });
-            };
-
-            self.refresh();
-        }
         
-        $.connection.hub.logging = true;
-        $.connection.hub.start();
-        var pageViewModel = new PageViewModel();
-        ko.applyBindings(pageViewModel);
     </script>
 }
