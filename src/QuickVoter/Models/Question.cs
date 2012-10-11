@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 
 namespace QuickVoter.Models
 {
@@ -21,4 +22,8 @@ namespace QuickVoter.Models
         public int Votes { get; set; }
     }
 
+    public class QuestionContext : DbContext
+    {
+        public DbSet<Question> Questions { get; set; }
+    }
 }

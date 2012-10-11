@@ -2,8 +2,6 @@
 using System.Linq;
 using System.Web.Http;
 using QuickVoter.Models;
-using Raven.Client;
-using Raven.Client.Document;
 using SignalR;
 
 namespace QuickVoter.Controllers
@@ -30,21 +28,21 @@ namespace QuickVoter.Controllers
 
     public class QuestionsController : ApiController
     {
-        private readonly IDocumentSession _session;
+        private readonly QuestionContext _context;
 
-        public QuestionsController(IDocumentSession session)
+        public QuestionsController(QuestionContext context)
         {
-            _session = session;
+            _context = context;
         }
 
         public List<Question> Get()
         {
-            return _session.Query<Question>().ToList();
+            return _context.Questions.ToList();
         }
 
         public Question Get(int id)
         {
-            return _session.Load<Question>(id);
+            return _context.Questions.FirstOrDefault(q => q.Id == id);
         }
 
         public Question Post(CreateQuestionCommand command)
@@ -53,11 +51,11 @@ namespace QuickVoter.Controllers
                                {
                                    Text = command.Text,
                                    Answers =
-                                       command.Answers.Select((a, i) => new Answer() {Id = i, Text = a.Text, Votes = a.Votes}).ToList()
+                                       command.Answers.Select((a, i) => new Answer() {  Text = a.Text, Votes = a.Votes}).ToList()
                                };
 
-            _session.Store(question);
-            _session.SaveChanges();
+            _context.Questions.Add(question);
+            _context.SaveChanges();
 
             return question;
         }
@@ -67,22 +65,21 @@ namespace QuickVoter.Controllers
     public class AnswersController : ApiController
     {
 
-        private readonly IDocumentSession _session;
+        private readonly QuestionContext _context;
 
-        public AnswersController(IDocumentSession session)
+        public AnswersController(QuestionContext context)
         {
-            _session = session;
+            _context = context;
         }
 
         public Answer Post(int questionId, AddAnswerCommand command)
         {
-            var question = _session.Load<Question>(questionId);
+            var question = _context.Questions.First(q => q.Id == questionId);
             var nextId = question.Answers.Count;
             var newAnswer = new Answer() { Id = nextId, Text = command.Text, Votes = 1 };
             question.Answers.Add(newAnswer);
             
-            _session.Store(question);
-            _session.SaveChanges();
+            _context.SaveChanges();
             
             return newAnswer;
         }
@@ -90,11 +87,11 @@ namespace QuickVoter.Controllers
         [ActionName("vote")]
         public Answer Post(int questionId, int answerId)
         {
-            var question = _session.Load<Question>(questionId);
+            var question = _context.Questions.First(q => q.Id == questionId);
             var answer = question.Answers.Single(a => a.Id == answerId);
             answer.Votes++;
-            _session.Store(question);
-            _session.SaveChanges();
+            
+            _context.SaveChanges();
 
             return answer;
         }
