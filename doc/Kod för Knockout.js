@@ -148,6 +148,20 @@ Gör om till observableArray
         }
 
 
+/*
+Visa vilket svar som leder
+*/
+
+            self.topAnswer = ko.computed(function () {
+                var topSoFar = null;
+                for (var a in self.answers()) {
+                    var answer = self.answers()[a];
+                    if (topSoFar == null || topSoFar.votes() < answer.votes())
+                        topSoFar = answer;
+                }
+                return topSoFar;
+            });
+
 
 /*************************/
 /*          API          */
