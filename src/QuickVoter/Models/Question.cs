@@ -24,6 +24,11 @@ namespace QuickVoter.Models
 
     public class QuestionContext : DbContext
     {
+        public QuestionContext() : base("QuickVoter")
+        {
+            
+        }
+
         public DbSet<Question> Questions { get; set; }
     }
 }

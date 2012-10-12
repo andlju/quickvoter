@@ -37,12 +37,12 @@ namespace QuickVoter.Controllers
 
         public List<Question> Get()
         {
-            return _context.Questions.ToList();
+            return _context.Questions.Include("Answers").ToList();
         }
 
         public Question Get(int id)
         {
-            return _context.Questions.FirstOrDefault(q => q.Id == id);
+            return _context.Questions.Include("Answers").FirstOrDefault(q => q.Id == id);
         }
 
         public Question Post(CreateQuestionCommand command)
@@ -74,7 +74,7 @@ namespace QuickVoter.Controllers
 
         public Answer Post(int questionId, AddAnswerCommand command)
         {
-            var question = _context.Questions.First(q => q.Id == questionId);
+            var question = _context.Questions.Include("Answers").First(q => q.Id == questionId);
             var nextId = question.Answers.Count;
             var newAnswer = new Answer() { Id = nextId, Text = command.Text, Votes = 1 };
             question.Answers.Add(newAnswer);
@@ -87,7 +87,7 @@ namespace QuickVoter.Controllers
         [ActionName("vote")]
         public Answer Post(int questionId, int answerId)
         {
-            var question = _context.Questions.First(q => q.Id == questionId);
+            var question = _context.Questions.Include("Answers").First(q => q.Id == questionId);
             var answer = question.Answers.Single(a => a.Id == answerId);
             answer.Votes++;
             
