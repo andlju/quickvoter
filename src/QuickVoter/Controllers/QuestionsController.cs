@@ -62,6 +62,11 @@ namespace QuickVoter.Controllers
 
             return question;
         }
+
+        public void Delete()
+        {
+            _context.Database.Delete();
+        }
         
     }
 
