@@ -120,7 +120,7 @@ UpgradeLog*.XML
 App_Data
 
 #NuGet Packages
-[pP]ackages
+#[pP]ackages
 
 ############
 ## Windows
