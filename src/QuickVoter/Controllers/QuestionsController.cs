@@ -57,6 +57,9 @@ namespace QuickVoter.Controllers
             _context.Questions.Add(question);
             _context.SaveChanges();
 
+            var hub = GlobalHost.ConnectionManager.GetHubContext<QuestionHub>();
+            hub.Clients.questionAdded(question);
+
             return question;
         }
 
@@ -86,6 +89,9 @@ namespace QuickVoter.Controllers
             
             _context.SaveChanges();
 
+            var hub = GlobalHost.ConnectionManager.GetHubContext<QuestionHub>();
+            hub.Clients["Question_" + questionId].answerAdded(newAnswer);
+
             return newAnswer;
         }
 
@@ -97,6 +103,9 @@ namespace QuickVoter.Controllers
             answer.Votes++;
             
             _context.SaveChanges();
+            
+            var hub = GlobalHost.ConnectionManager.GetHubContext<QuestionHub>();
+            hub.Clients["Question_" + questionId].answerUpdated(answer);
 
             return answer;
         }
