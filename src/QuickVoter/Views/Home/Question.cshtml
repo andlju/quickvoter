@@ -4,46 +4,33 @@
     ViewBag.Title = "Question";
 }
 
+<!-- ko with: selectedQuestion -->
 <header>
-    <h1>Vilken musik kodar du helst till?</h1>
+    <h1 data-bind="text: text"></h1>
+    <!-- ko with: topAnswer -->
+    <h3 data-bind="text: text"></h3>
+    <!-- /ko -->
 </header>
 <div class="row">
     <div class="span8 well">
-
+        
+        <!-- ko foreach: answers -->
         <div class="row answer">
             <div class="span1 actions">
-                <button class="btn btn-small btn-info">Vote</button>
+                <button class="btn btn-small btn-info" data-bind="click: addVote">Vote</button>
             </div>
-            <div class="span1 number-of-votes">4</div>
+            <div class="span1 number-of-votes" data-bind="text: votes"></div>
             <div class="span6 text">
-                <a href="#">Dubstep</a>
+                <a href="#" data-bind="text: text"></a>
             </div>
         </div>
-
-        <div class="row answer">
-            <div class="span1 actions">
-                <button class="btn btn-small btn-info">Vote</button>
-            </div>
-            <div class="span1 number-of-votes">1</div>
-            <div class="span6 text">
-                <a href="#">Eurodisco</a>
-            </div>
-        </div>
-
-        <div class="row answer">
-            <div class="span1 actions">
-                <button class="btn btn-small btn-info">Vote</button>
-            </div>
-            <div class="span1 number-of-votes">3</div>
-            <div class="span6 text">
-                <a href="#">Klassiskt</a>
-            </div>
-        </div>
-
+        
+        <!-- /ko -->
+        
         <div class="row">
             <div class="offset2 span6">
-                <form class="form-horizontal" action="#">
-                    <input type="text" class="input-large" placeholder="New answer"/>
+                <form class="form-horizontal" data-bind="submit: addAnswer">
+                    <input type="text" class="input-large" data-bind="value: newAnswer" placeholder="New answer"/>
                     <input type="submit" class="btn btn-primary" value="Add"/>
                 </form>
             </div>
@@ -51,12 +38,60 @@
     </div>
 
 </div>
-
+<!-- /ko -->
 
 @section scripts
 {
     <script type="text/javascript">
+        /// <reference path="~/Scripts/knockout-2.1.0.debug.js"/>
 
-        
+
+        function PageViewModel() {
+            var self = this;
+
+            self.selectedQuestion = ko.observable();
+
+            self.questionLoaded = function(m) {
+                var q = new QuestionViewModel(m);
+                self.selectedQuestion(q);
+            };
+
+            self.answerAdded = function (m) {
+                if (self.selectedQuestion()) {
+                    self.selectedQuestion().answerAdded(m);
+                }
+            };
+
+            self.answerUpdated = function (m) {
+                if (self.selectedQuestion()) {
+                    self.selectedQuestion().answerUpdated(m);
+                }
+            };
+
+            self.refresh = function() {
+                QuickVoter.Questions.loadQuestion(@ViewBag.QuestionId).
+                    done(self.questionLoaded);
+            };
+
+            self.refresh();
+        }
+
+        $(function() {
+            var pageViewModel = new PageViewModel();
+            ko.applyBindings(pageViewModel);
+            
+            var hub = $.connection.questionHub;
+
+            hub.answerAdded = pageViewModel.answerAdded;
+            hub.answerUpdated = pageViewModel.answerUpdated;
+
+            $.connection.hub.start().done(
+                function () {
+                    hub.subscribeToQuestion(@ViewBag.QuestionId);
+                }
+            );
+
+        });
+
     </script>
 }
