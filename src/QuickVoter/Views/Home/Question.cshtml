@@ -4,30 +4,58 @@
     ViewBag.Title = "Question";
 }
 
-<!-- ko with: currentQuestion -->
 <header>
-    <h1 data-bind="text: text"></h1>
+    <h1>Vilken musik lyssnar du helst på när du kodar?</h1>
 </header>
 <div class="row">
     <div class="span8 well">
-        
-        <!-- ko foreach: answers -->
+
         <div class="row answer">
             <div class="span1 actions">
-                <button class="btn btn-small btn-info" data-bind="click: addVote">Vote</button>
+                <button class="btn btn-small btn-info">Vote</button>
             </div>
-            <div class="span1 number-of-votes" data-bind="text: votes"></div>
-            <div class="span6 text" data-bind="css : { leading : $parent.leadingAnswer() == $data }">
-                <a href="#" data-bind="text: text"></a>
+            <div class="span1 number-of-votes">4</div>
+            <div class="span6 text">
+                <a href="#">Dubstep</a>
             </div>
         </div>
-        <!-- /ko -->
+
+        <div class="row answer">
+            <div class="span1 actions">
+                <button class="btn btn-small btn-info">Vote</button>
+            </div>
+            <div class="span1 number-of-votes">3</div>
+            <div class="span6 text">
+                <a href="#">Metal</a>
+            </div>
+        </div>
+
+        <div class="row answer">
+            <div class="span1 actions">
+                <button class="btn btn-small btn-info">Vote</button>
+            </div>
+            <div class="span1 number-of-votes">3</div>
+            <div class="span6 text">
+                <a href="#">Klassiskt</a>
+            </div>
+        </div>
+
+        <div class="row answer">
+            <div class="span1 actions">
+                <button class="btn btn-small btn-info">Vote</button>
+            </div>
+            <div class="span1 number-of-votes">2</div>
+            <div class="span6 text">
+                <a href="#">Eurodisco</a>
+            </div>
+        </div>
+
 
         <div class="row">
             <div class="offset2 span6">
-                <form class="form-horizontal" data-bind="submit: addAnswer">
-                    <input type="text" class="input-large" data-bind="value: newAnswer" placeholder="New answer"/>
-                    <input type="submit" class="btn btn-primary" value="Add"/>
+                <form class="form-horizontal">
+                    <input type="text" class="input-large" placeholder="New answer" />
+                    <input type="submit" class="btn btn-primary" value="Add" />
                 </form>
             </div>
         </div>
@@ -36,60 +64,10 @@
 
 </div>
 
-<div class="row" data-bind="with: leadingAnswer">
-    <div class="span8">
-        <h3 data-bind="text: text + ' (' + votes() + ')'"></h3>
-    </div>
-</div>
-
-<!-- /ko -->
 
 @section scripts
 {
     <script type="text/javascript">
-        /// <reference path="~/Scripts/knockout-2.1.0.debug.js"/>
 
-        function PageViewModel() {
-            var self = this;
-
-            self.currentQuestion = ko.observable();
-
-            self.answerAdded = function (m) {
-                if (self.currentQuestion)
-                    self.currentQuestion().answerAdded(m);
-            };
-
-            self.answerUpdated = function (m) {
-                if (self.currentQuestion)
-                    self.currentQuestion().answerUpdated(m);
-            };
-
-            self.refresh = function() {
-                QuickVoter.Questions.loadQuestion(@ViewBag.QuestionId).
-                    done(function (m) {
-                        var q = new QuestionViewModel(m);
-                        self.currentQuestion(q);
-                    });
-            };
-        }
-
-        $(function() {
-            var pageViewModel = new PageViewModel();
-            ko.applyBindings(pageViewModel);
-
-            var hub = $.connection.questionHub;
-
-            hub.answerAdded = pageViewModel.answerAdded;
-            hub.answerUpdated = pageViewModel.answerUpdated;
-            
-            $.connection.logging = true;
-            $.connection.hub.start().
-                done(function () {
-                    hub.registerForQuestion(@ViewBag.QuestionId);
-                });
-
-            pageViewModel.refresh();
-
-        });
     </script>
 }

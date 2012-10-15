@@ -9,7 +9,6 @@
 <section id="currentQuestions">
     <div class="row">
         <div class="span8">
-            <!-- ko foreach: questions -->
             <div class="row frontpage-question">
                 <div class="span1 hidden-phone">
                     <div class="number-of-answers">3</div>
@@ -20,15 +19,15 @@
                     <div class="number-title">votes</div>
                 </div>
                 <div class="span6">
-                    <div class="text"><a data-bind="text: text, attr : { href : '/Home/Question/' + id }"></a></div>
+                    <div class="text"><a href="/Home/Question/1">Vilken musik lyssnar du helst på när du kodar?</a></div>
                     <div class="pull-right">Asked by CodingInsomnia</div>
                 </div>
             </div>
-            <!-- /ko -->
+
             <div class="row frontpage-new-question">
                 <div class="offset2 span6">
-                    <form class="form-horizontal" data-bind="submit: addQuestion">
-                        <input type="text" class="input-xlarge" data-bind="value: newQuestion" placeholder="New question" />
+                    <form class="form-horizontal">
+                        <input type="text" class="input-xlarge" placeholder="New question" />
                         <input type="submit" value="Add" class="btn btn-primary" />
                     </form>
                 </div>
@@ -40,48 +39,6 @@
 @section scripts
 {
     <script type="text/javascript">
-        /// <reference path="~/Scripts/app/model.questions.js"/>
 
-        function PageViewModel() {
-            var self = this;
-
-            self.questions = ko.observableArray([]);
-
-            self.newQuestion = ko.observable('');
-
-            self.questionAdded = function(m) {
-                var q = new QuestionViewModel(m);
-                self.questions.push(q);
-            };
-            
-            self.addQuestion = function () {
-                QuickVoter.Questions.addQuestion({ Text: self.newQuestion(), Answers: [] });
-                self.newQuestion('');
-            };
-
-            self.refresh = function() {
-                QuickVoter.Questions.loadQuestions().
-                    done(function (m) {
-                        var list = $.map(m, function (el) { return new QuestionViewModel(el); });
-                        self.questions(list);
-                    });
-            };
-        }
-
-        $(function() {
-            var pageViewModel = new PageViewModel();
-            ko.applyBindings(pageViewModel);
-
-            var hub = $.connection.questionHub;
-
-            hub.questionAdded = function(m) {
-                pageViewModel.questionAdded(m);
-            };
-
-            $.connection.logging = true;
-            $.connection.hub.start();
-
-            pageViewModel.refresh();
-        });
     </script>
 }
