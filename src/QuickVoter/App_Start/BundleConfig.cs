@@ -14,7 +14,7 @@ namespace QuickVoter
                         "~/Scripts/jquery-ui-{version}.js"));
 
 
-            bundles.Add(new ScriptBundle("~/bundles/jquery.signalR").Include(
+            bundles.Add(new ScriptBundle("~/bundles/jquerysignalr").Include(
                         "~/Scripts/jquery.signalR-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
