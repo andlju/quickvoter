@@ -5,11 +5,12 @@ Kod för Knockout
 Skapa enkel vymodell för Answer
 */
 
-        function AnswerViewModel() {
+        // View Model for Answers
+        function AnswerViewModel(model) {
             var self = this;
 
-            self.answerText = 'Le Café (Centralen)';
-            self.votes = 7;
+            self.votes = 5;
+            self.text = "Dubstep";
         }
 
 
@@ -18,11 +19,13 @@ Skapa enkel vymodell för Answer
 Refactoring av vymodell - ta emot model
 */
 
+        // View Model for Answers
         function AnswerViewModel(model) {
             var self = this;
 
-            self.answerText = model.text;
-            self.votes = model.votes;
+            // Get initial number of votes and answer text from the Model
+            self.votes = model.Votes;
+            self.text = model.Text;
         }
 
 
@@ -33,64 +36,77 @@ Refactoring av vymodell - ta emot model
 Lägg till vymodell för Question
 */
 
-        function QuestionViewModel() {
+        // View Model for Questions
+        function QuestionViewModel(model) {
             var self = this;
 
-            self.questionText = 'Var ska vi träffas på nästa #kodkaffe?';
-            self.answers = [
-                new AnswerViewModel({ text: 'Le Café (Centralen)', votes: 7 }),
-                new AnswerViewModel({ text: 'Espresso House', votes: 4 }),
-                new AnswerViewModel({ text: 'Le Café (Stureplan)', votes: 3 })
-            ];
-        }
+            // Get initial text from the Model
+            self.text = model.Text; 
 
+            // Map all answers from an Answer Model into Answer View Models
+            self.answers = $.map(model.Answers, function(el) { return new AnswerViewModel(el); });
+        }
 
 
 /*
 Alla vymodeller med indata
 */
 
+
+        // View Model for Answers
         function AnswerViewModel(model) {
             var self = this;
 
-            self.answerText = model.text;
-            self.votes = model.votes;
+            // Get initial number of votes and answer text from the Model
+            self.votes = model.Votes;
+            self.text = model.Text;
         }
+        
 
+        // View Model for Questions
         function QuestionViewModel(model) {
             var self = this;
 
-            self.questionText = model.text;
-            self.answers = $.map(model.answers, function(el) { return new AnswerViewModel(el); });
+            // Get initial text from the Model
+            self.text = model.Text;
+
+            // Map all answers from an Answer Model into Answer View Models
+            self.answers = $.map(model.Answers, function (el) { return new AnswerViewModel(el); });
         }
 
-        var questionModel = {
-            text: 'Var ska vi träffas på nästa #kodkaffe?',
-            answers: [
-                { text: 'Le Café (Centralen)', votes: 7 },
-                { text: 'EspressoHouse', votes: 4 },
-                { text: 'Le Café (Stureplan)', votes: 3 },
-                { text: 'Hemma hos Cecilia', votes: 4 }
-            ]
-        };
-        
-        var viewModel = new QuestionViewModel(questionModel);
-        ko.applyBindings(viewModel);
+        $(function() {
+
+            // Create the main View Model for this page
+            var pageViewModel = new QuestionViewModel({
+                Text: "Vilken musik lyssnar du helst på när du kodar?",
+                Answers: [
+                    { Text: "Dubstep", Votes: 6 },
+                    { Text: "Metal", Votes: 3 },
+                    { Text: "Klassiskt", Votes: 2 },
+                    { Text: "Eurodisco", Votes: 1 }
+                ]
+            });
+            ko.applyBindings(pageViewModel);
+            
+        });
+
 
 
 /*
 Click-hantering
 */
 
+        // View Model for Answers
         function AnswerViewModel(model) {
             var self = this;
 
-            self.answerText = model.text;
-            self.votes = model.votes;
+            // Get initial number of votes and answer text from the Model
+            self.votes = ko.observable(model.Votes);
+            self.text = model.Text;
 
-            self.vote = function () {
-                self.votes = self.votes + 1;
-                alert('Votes: ' + self.votes);
+            // Add a vote
+            self.addVote = function () {
+                alert("Voted!");
             };
         }
 
@@ -99,68 +115,104 @@ Click-hantering
 Introducera Observables
 */
 
+        // View Model for Answers
         function AnswerViewModel(model) {
             var self = this;
 
-            self.answerText = model.text;
-            self.votes = ko.observable(model.votes);
+            // Get initial number of votes and answer text from the Model
+            self.votes = ko.observable(model.Votes);
+            self.text = model.Text;
 
-            self.vote = function () {
-                self.votes(self.votes() + 1);
+            // Add a vote
+            self.addVote = function () {
+                // Get the current number of votes
+                var currentVotes = self.votes();
+                // Increase by one
+                currentVotes = currentVotes + 1;
+                // Set the new value
+                self.votes(currentVotes);
             };
         }
 
 
-
 /*
-Ruta för att lägga till nytt svar
+Databind rutan för nytt svar
 */
 
-<div class="row">
-    <div class="offset2 span8">
-        <form action="#">
-            <input type="text" class="input-large" />
-            <input type="submit" class="btn btn-primary" value="New answer"/>
-        </form>
-    </div>
-</div>
-
-
-
-
-/*
-Gör om till observableArray
-*/
-
+        // View Model for Questions
         function QuestionViewModel(model) {
             var self = this;
 
-            self.questionText = model.text;
-            self.answers = ko.observableArray($.map(model.answers, function(el) { return new AnswerViewModel(el); }));
+            // Get initial text from the Model
+            self.text = model.Text;
 
-            self.newAnswerText = ko.observable();
+            // Map all answers from an Answer Model into Answer View Models
+            self.answers = ko.observableArray($.map(model.Answers, function (el) { return new AnswerViewModel(el); }));
+            
+            // Text for new answer
+            self.newAnswer = ko.observable();
 
-            self.addAnswer = function() {
-                var answer = { text: self.newAnswerText(), votes: 1 };
-                self.answers.push(new AnswerViewModel(answer));
-                self.newAnswerText('');
+            // Add a new answer
+            self.addAnswer = function () {
+                // Create a new Answer View Model using the current value of the new answer textbox
+                var a = new AnswerViewModel({ Text: self.newAnswer(), Votes: 1 });
+                // Push it to the current list of answers
+                self.answers.push(a);
+                // Clear the textbox
+                self.newAnswer('');
             };
         }
+
+
+
 
 
 /*
 Visa vilket svar som leder
 */
 
-            self.topAnswer = ko.computed(function () {
-                var topSoFar = null;
-                for (var a in self.answers()) {
-                    var answer = self.answers()[a];
-                    if (topSoFar == null || topSoFar.votes() < answer.votes())
-                        topSoFar = answer;
+        // View Model for Questions
+        function QuestionViewModel(model) {
+            var self = this;
+
+            // Get initial text from the Model
+            self.text = model.Text;
+
+            // Map all answers from an Answer Model into Answer View Models
+            self.answers = ko.observableArray($.map(model.Answers, function (el) { return new AnswerViewModel(el); }));
+            
+            // Text for new answer
+            self.newAnswer = ko.observable();
+
+            // Add a new answer
+            self.addAnswer = function () {
+                // Create a new Answer View Model using the current value of the new answer textbox
+                var a = new AnswerViewModel({ Text: self.newAnswer(), Votes: 1 });
+                // Push it to the current list of answers
+                self.answers.push(a);
+                // Clear the textbox
+                self.newAnswer('');
+            };
+
+            // Returns the currently leading answer
+            self.getLeadingAnswer = function () {
+                var leadingAnswer = null;
+                
+                for (var i = 0; i < self.answers().length; i++) {
+                    var a = self.answers()[i];
+                    // Does this answer have more votes than the previously leading one? 
+                    if (leadingAnswer == null || leadingAnswer.votes() < a.votes())
+                        leadingAnswer = a; // Then it's now in the lead!
                 }
-                return topSoFar;
-            });
+                return leadingAnswer;
+            };
+
+            // A computed property
+            self.leadingAnswer = ko.computed(self.getLeadingAnswer);
+        }
+
+
+// data-bind="css : { leading : $parent.leadingAnswer() == $data }"
 
 
 /*************************/
@@ -171,29 +223,29 @@ Visa vilket svar som leder
 Introducera PageViewModel för att hålla i sidans flöde och ladda in en fråga från API:et
 */
 
+
         function PageViewModel() {
             var self = this;
+            
+            // The current question for this page
+            self.currentQuestion = ko.observable();
 
-            self.question = ko.observable();
-
-            self.refresh = function() {
-                QuickVoter.Questions.loadQuestion(@ViewBag.QuestionId)
-                    .done(function (res) {
-                        var questionViewModel = new QuestionViewModel(res);
-                        self.question(questionViewModel);
+            // Refresh the current question from the api
+            self.refresh = function () {
+                // Load it
+                QuickVoter.Questions.loadQuestion(@ViewBag.QuestionId).
+                    done(function (m) {
+                        // Create a new View Model and make it the current question
+                        var q = new QuestionViewModel(m);
+                        self.currentQuestion(q);
                     });
             };
-
-            self.refresh();
         }
-
-
-        var viewModel = new PageViewModel();
 
 /* 
 Runt html-koden
 
-<!-- ko with: question -->
+<!-- ko with: currentQuestion -->
 
 <!-- /ko -->
 
@@ -204,124 +256,379 @@ Runt html-koden
 Spara nya svar
 */
 
+        // View Model for Questions
         function QuestionViewModel(model) {
             var self = this;
 
-            self.questionId = model.id;
+            // Store the id of the question
+            self.id = model.Id;
             
-            self.questionText = model.text;
+            // Get initial text from the Model
+            self.text = model.Text;
+
+            // Map all answers from an Answer Model into Answer View Models
+            self.answers = ko.observableArray($.map(model.Answers, function (el) { return new AnswerViewModel(el); }));
             
-            self.answers = ko.observableArray($.map(model.answers, function(el) { return new AnswerViewModel(el); }));
+            // Text for new answer
+            self.newAnswer = ko.observable();
 
-            self.newAnswerText = ko.observable();
-
-            self.answerAdded = function (res) {
-                self.answers.push(new AnswerViewModel(res));
+            self.answerAdded = function(m) {
+                // Create a new Answer View Model using the current value of the new answer textbox
+                var a = new AnswerViewModel(m);
+                // Push it to the current list of answers
+                self.answers.push(a);
             };
             
+            // Add a new answer
             self.addAnswer = function () {
-                QuickVoter.Questions.addAnswer(self.questionId, { text: self.newAnswerText(), votes: 1 }).
-                    done(answerAdded);
-                self.newAnswerText('');
+                // Add the answer using the API. 
+                QuickVoter.Questions.addAnswer(self.id, { Text: self.newAnswer(), Votes: 1 }).
+                    done(self.answerAdded); // When done, send it to the answerAdded function.
+                
+                // Clear the textbox
+                self.newAnswer('');
             };
+
+            // Returns the currently leading answer
+            self.getLeadingAnswer = function () {
+                var leadingAnswer = null;
+                
+                for (var i = 0; i < self.answers().length; i++) {
+                    var a = self.answers()[i];
+                    // Does this answer have more votes than the previously leading one? 
+                    if (leadingAnswer == null || leadingAnswer.votes() < a.votes())
+                        leadingAnswer = a; // Then it's now in the lead!
+                }
+                return leadingAnswer;
+            };
+
+            // A computed property
+            self.leadingAnswer = ko.computed(self.getLeadingAnswer);
         }
+
+
 
 
 /*
 Spara röstningar
 */
 
-
+        // View Model for Answers
         function AnswerViewModel(questionId, model) {
             var self = this;
+
+            // Store the id of the answer
+            self.id = model.Id;
             
-            self.answerText = model.text;
-            self.votes = ko.observable(model.votes);
+            // Get initial number of votes and answer text from the Model
+            self.votes = ko.observable(model.Votes);
+            self.text = model.Text;
 
-            self.votesUpdated = function(votes) {
-                self.votes(votes);
+            self.votesUpdated = function(m) {
+                self.votes(m.Votes);
             };
-
-            self.vote = function () {
-                QuickVoter.Questions.addVote(questionId, model.id).
-                    done(function(res) {
-                        self.votesUpdated(res.votes);
-                    });
+            
+            // Add a vote
+            self.addVote = function () {
+                QuickVoter.Questions.addVote(questionId, self.id).
+                    done(self.votesUpdated);
             };
         }
+        
 
+        // View Model for Questions
         function QuestionViewModel(model) {
             var self = this;
 
-            self.questionId = model.id;
+            // Store the id of the question
+            self.id = model.Id;
             
-            self.questionText = model.text;
+            // Get initial text from the Model
+            self.text = model.Text;
+
+            // Map all answers from an Answer Model into Answer View Models
+            self.answers = ko.observableArray($.map(model.Answers, function (el) { return new AnswerViewModel(self.id, el); }));
             
-            self.answers = ko.observableArray($.map(model.answers, function(el) { return new AnswerViewModel(model.id, el); }));
+            // Text for new answer
+            self.newAnswer = ko.observable();
 
-            self.newAnswerText = ko.observable();
-
-            self.answerAdded = function (res) {
-                self.answers.push(new AnswerViewModel(model.id, res));
+            self.answerAdded = function(m) {
+                // Create a new Answer View Model using the current value of the new answer textbox
+                var a = new AnswerViewModel(self.id, m);
+                // Push it to the current list of answers
+                self.answers.push(a);
             };
             
+            // Add a new answer
             self.addAnswer = function () {
-                QuickVoter.Questions.addAnswer(self.questionId, { text: self.newAnswerText(), votes: 1 }).
-                    done(self.answerAdded);
-                self.newAnswerText('');
+                // Add the answer using the API. 
+                QuickVoter.Questions.addAnswer(self.id, { Text: self.newAnswer(), Votes: 1 }).
+                    done(self.answerAdded); // When done, send it to the answerAdded function.
+                
+                // Clear the textbox
+                self.newAnswer('');
             };
+
+            // Returns the currently leading answer
+            self.getLeadingAnswer = function () {
+                var leadingAnswer = null;
+                
+                for (var i = 0; i < self.answers().length; i++) {
+                    var a = self.answers()[i];
+                    // Does this answer have more votes than the previously leading one? 
+                    if (leadingAnswer == null || leadingAnswer.votes() < a.votes())
+                        leadingAnswer = a; // Then it's now in the lead!
+                }
+                return leadingAnswer;
+            };
+
+            // A computed property
+            self.leadingAnswer = ko.computed(self.getLeadingAnswer);
         }
+
 
 
 /*
-Lista frågor dynamiskt (Index-sidan)
+Lista frågor dynamiskt och lägg till nya frågor.
 */
+
+        // Main view model for the questions list page
         function PageViewModel() {
             var self = this;
 
+            // The list of questions
             self.questions = ko.observableArray([]);
 
-            self.refresh = function() {
+            // Function to refresh the list
+            self.refresh = function () {
+                // Load from the API
                 QuickVoter.Questions.loadQuestions().
-                    done(function (res) {
-                        self.questions($.map(res, function(el) { return new QuestionViewModel(el); }));
+                    done(function (m) {
+                        // When loaded, map each Model element to a View Model
+                        var qs = $.map(m, function (el) { return new QuestionViewModel(el); });
+                        // And populate the list
+                        self.questions(qs);
                     });
             };
-            self.refresh();
+
+            // Textbox for new question
+            self.newQuestion = ko.observable();
+
+            // A question should be added to the list
+            self.questionAdded = function(m) {
+                var q = new QuestionViewModel(m);
+                self.questions.push(q);
+            };
+
+            // Add a new question
+            self.addQuestion = function () {
+                // Send it to the api
+                QuickVoter.Questions.addQuestion({ Text: self.newQuestion(), Answers: [] }).
+                    done(self.questionAdded); // Add the newly created question
+
+                // Clear the textbox
+                self.newQuestion('');
+            };
+            
         }
 
-        $(function() {
-            var viewModel = new PageViewModel();
-            ko.applyBindings(viewModel);
-        });
 
 
 /*
 Koppla upp mot QuestionHub
 */
 
+        // Main view model for the questions list page
         function PageViewModel() {
             var self = this;
 
-            self.question = ko.observable();
+            // The list of questions
+            self.questions = ko.observableArray([]);
 
-            self.hub = $.connection.questionHub;
-
-            self.refresh = function() {
-                QuickVoter.Questions.loadQuestion(@ViewBag.QuestionId)
-                    .done(function (res) {
-                        var questionViewModel = new QuestionViewModel(res);
-                        self.question(questionViewModel);
-                        self.hub.answerAdded = questionViewModel.answerAdded;
+            // Function to refresh the list
+            self.refresh = function () {
+                // Load from the API
+                QuickVoter.Questions.loadQuestions().
+                    done(function (m) {
+                        // When loaded, map each Model element to a View Model
+                        var qs = $.map(m, function (el) { return new QuestionViewModel(el); });
+                        // And populate the list
+                        self.questions(qs);
                     });
             };
 
-            self.refresh();
+            // Textbox for new question
+            self.newQuestion = ko.observable();
+
+            // A question should be added to the list
+            self.questionAdded = function(m) {
+                var q = new QuestionViewModel(m);
+                self.questions.push(q);
+            };
+
+            // Add a new question
+            self.addQuestion = function () {
+                // Send it to the api
+                QuickVoter.Questions.addQuestion({ Text: self.newQuestion(), Answers: [] });
+
+                // Clear the textbox
+                self.newQuestion('');
+            };
+            
         }
-        
-        var pageViewModel = new PageViewModel();
-        ko.applyBindings(pageViewModel);
-        $.connection.hub.start();
+
+        $(function() {
+            var pageViewModel = new PageViewModel();
+            pageViewModel.refresh();
+            ko.applyBindings(pageViewModel);
+
+            var hub = $.connection.questionHub;
+            hub.questionAdded = pageViewModel.questionAdded;
+            
+            $.connection.hub.logging = true;
+            $.connection.hub.start();
+            
+        });
 
 
-        
+
+/*
+SignalR även på Question-sidan
+*/
+
+// View Model for Answers
+function AnswerViewModel(questionId, model) {
+    var self = this;
+
+    // Store the id of the answer
+    self.id = model.Id;
+
+    // Get initial number of votes and answer text from the Model
+    self.votes = ko.observable(model.Votes);
+    self.text = model.Text;
+
+    self.votesUpdated = function (m) {
+        self.votes(m.Votes);
+    };
+
+    // Add a vote
+    self.addVote = function () {
+        QuickVoter.Questions.addVote(questionId, self.id);
+    };
+}
+
+
+// View Model for Questions
+function QuestionViewModel(model) {
+    var self = this;
+
+    // Store the id of the question
+    self.id = model.Id;
+
+    // Get initial text from the Model
+    self.text = model.Text;
+
+    // Map all answers from an Answer Model into Answer View Models
+    self.answers = ko.observableArray($.map(model.Answers, function (el) { return new AnswerViewModel(self.id, el); }));
+
+    // Text for new answer
+    self.newAnswer = ko.observable();
+
+    self.answerAdded = function (m) {
+        // Create a new Answer View Model using the current value of the new answer textbox
+        var a = new AnswerViewModel(self.id, m);
+        // Push it to the current list of answers
+        self.answers.push(a);
+    };
+
+    // Add a new answer
+    self.addAnswer = function () {
+        // Add the answer using the API. 
+        QuickVoter.Questions.addAnswer(self.id, { Text: self.newAnswer(), Votes: 1 });
+
+        // Clear the textbox
+        self.newAnswer('');
+    };
+
+    // Update votes for a specific answer
+    self.votesUpdated = function(m) {
+        for (var i = 0; i < self.answers().length; i++) {
+            var a = self.answers()[i];
+            if (a.id == m.Id) {
+                a.votesUpdated(m);
+            }
+        }
+    };
+
+    // Returns the currently leading answer
+    self.getLeadingAnswer = function () {
+        var leadingAnswer = null;
+
+        for (var i = 0; i < self.answers().length; i++) {
+            var a = self.answers()[i];
+            // Does this answer have more votes than the previously leading one? 
+            if (leadingAnswer == null || leadingAnswer.votes() < a.votes())
+                leadingAnswer = a; // Then it's now in the lead!
+        }
+        return leadingAnswer;
+    };
+
+    // A computed property
+    self.leadingAnswer = ko.computed(self.getLeadingAnswer);
+}
+
+
+
+        function PageViewModel() {
+            var self = this;
+            
+            // The current question for this page
+            self.currentQuestion = ko.observable();
+
+            // Refresh the current question from the api
+            self.refresh = function () {
+                // Load it
+                QuickVoter.Questions.loadQuestion(@ViewBag.QuestionId).
+                    done(function (m) {
+                        // Create a new View Model and make it the current question
+                        var q = new QuestionViewModel(m);
+                        self.currentQuestion(q);
+                    });
+            };
+
+            // Add an answer using a SignalR event
+            self.answerAdded = function (m) {
+                if (self.currentQuestion()) {
+                    self.currentQuestion().answerAdded(m);
+                }
+            };
+
+            // Update votes using a SignalR event
+            self.votesUpdated = function (m) {
+                if (self.currentQuestion()) {
+                    self.currentQuestion().votesUpdated(m);
+                }
+            };
+        }
+
+        $(function() {
+
+            // Create the main View Model for this page
+            var pageViewModel = new PageViewModel();
+            pageViewModel.refresh();
+            ko.applyBindings(pageViewModel);
+
+            // Connect to the SignalR hub
+            var hub = $.connection.questionHub;
+
+            // Set events
+            hub.answerAdded = pageViewModel.answerAdded;
+            hub.votesUpdated = pageViewModel.votesUpdated;
+
+            $.connection.hub.logging = true;
+            $.connection.hub.start().
+                done(function () {
+                    hub.registerForQuestion(@ViewBag.QuestionId);
+                });
+        });
+
