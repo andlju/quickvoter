@@ -9,6 +9,7 @@
 <section id="currentQuestions">
     <div class="row">
         <div class="span8">
+            <!-- ko foreach: questions -->
             <div class="row frontpage-question">
                 <div class="span1 hidden-phone">
                     <div class="number-of-answers">3</div>
@@ -19,15 +20,16 @@
                     <div class="number-title">votes</div>
                 </div>
                 <div class="span6">
-                    <div class="text"><a href="/Home/Question/1">Vilken musik lyssnar du helst på när du kodar?</a></div>
+                    <div class="text"><a data-bind="text: text, attr : { href : '/Home/Question/' + id }"></a></div>
                     <div class="pull-right">Asked by CodingInsomnia</div>
                 </div>
             </div>
+            <!-- /ko -->
 
             <div class="row frontpage-new-question">
                 <div class="offset2 span6">
-                    <form class="form-horizontal">
-                        <input type="text" class="input-xlarge" placeholder="New question" />
+                    <form class="form-horizontal" data-bind="submit: addQuestion">
+                        <input type="text" class="input-xlarge" data-bind="value: newQuestion" placeholder="New question" />
                         <input type="submit" value="Add" class="btn btn-primary" />
                     </form>
                 </div>
@@ -40,5 +42,56 @@
 {
     <script type="text/javascript">
 
+        // Main view model for the questions list page
+        function PageViewModel() {
+            var self = this;
+
+            // The list of questions
+            self.questions = ko.observableArray([]);
+
+            // Function to refresh the list
+            self.refresh = function () {
+                // Load from the API
+                QuickVoter.Questions.loadQuestions().
+                    done(function (m) {
+                        // When loaded, map each Model element to a View Model
+                        var qs = $.map(m, function (el) { return new QuestionViewModel(el); });
+                        // And populate the list
+                        self.questions(qs);
+                    });
+            };
+
+            // Textbox for new question
+            self.newQuestion = ko.observable();
+
+            // A question should be added to the list
+            self.questionAdded = function(m) {
+                var q = new QuestionViewModel(m);
+                self.questions.push(q);
+            };
+
+            // Add a new question
+            self.addQuestion = function () {
+                // Send it to the api
+                QuickVoter.Questions.addQuestion({ Text: self.newQuestion(), Answers: [] });
+
+                // Clear the textbox
+                self.newQuestion('');
+            };
+            
+        }
+
+        $(function() {
+            var pageViewModel = new PageViewModel();
+            pageViewModel.refresh();
+            ko.applyBindings(pageViewModel);
+
+            var hub = $.connection.questionHub;
+            hub.questionAdded = pageViewModel.questionAdded;
+            
+            $.connection.hub.logging = true;
+            $.connection.hub.start();
+            
+        });
     </script>
 }

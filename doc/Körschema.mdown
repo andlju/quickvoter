@@ -1,6 +1,13 @@
 Knockout + SignalR
 ==================
 
+Förbered
+	- Rätt fontstorlek, ljust tema
+	- Stäng Twitter, Live Messenger etc
+	- Rensa databasen (DELETE /api/questions)
+	- Checka ut initial
+	- Starta Visual Studio, Fiddler, Sublime
+
 Snabb genomgång av appen.
 
 	- ASP.NET MVC 4
@@ -31,9 +38,9 @@ Refactoring av vymodell - ta emot model
 
 
 Lägg till vymodell för Question
-	- questionText
+	- text
 	- Lista med answers
-	- Lägg till data bindings för questionText och answers (foreach)
+	- Lägg till data bindings för text och answers (foreach)
 
 
 Refactoring av vymodeller - ta emot model
@@ -51,9 +58,8 @@ Introducera Observables
 	- ta bort alert
 
 
-Ruta för att lägga till nytt svar
-	- Form med text-fält och submit-knapp
-	- newAnswerText
+Databind rutan för nytt svar
+	- newAnswer
 	- addAnswer funktion
 
 
@@ -63,7 +69,8 @@ Gör om till observableArray
 
 Visa vilket svar som leder
 	- Introducera ko.computed
-	- Börja visa värdet överst
+	- Visa först värdet längst ner
+
 
 API
 ===
