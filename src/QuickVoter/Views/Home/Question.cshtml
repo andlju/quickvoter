@@ -64,12 +64,14 @@
                     });
             };
 
+            // Add an answer using a SignalR event
             self.answerAdded = function (m) {
                 if (self.currentQuestion()) {
                     self.currentQuestion().answerAdded(m);
                 }
             };
 
+            // Update votes using a SignalR event
             self.votesUpdated = function (m) {
                 if (self.currentQuestion()) {
                     self.currentQuestion().votesUpdated(m);
@@ -84,8 +86,10 @@
             pageViewModel.refresh();
             ko.applyBindings(pageViewModel);
 
+            // Connect to the SignalR hub
             var hub = $.connection.questionHub;
 
+            // Set events
             hub.answerAdded = pageViewModel.answerAdded;
             hub.votesUpdated = pageViewModel.votesUpdated;
 

@@ -52,6 +52,7 @@ function QuestionViewModel(model) {
         self.newAnswer('');
     };
 
+    // Update votes for a specific answer
     self.votesUpdated = function(m) {
         for (var i = 0; i < self.answers().length; i++) {
             var a = self.answers()[i];
